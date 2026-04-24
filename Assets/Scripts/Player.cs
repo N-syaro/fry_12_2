@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
 
     PlayerInput playerInput;
     Rigidbody2D rb;
+    bool IsGround = false;  
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -23,9 +25,29 @@ public class Player : MonoBehaviour
 
         rb.linearVelocityX = move.x * speed;
 
-        if (playerInput.actions["Jump"].WasPressedThisFrame())
+        if (playerInput.actions["Jump"].WasPressedThisFrame() && IsGround == true)
         {
             rb.linearVelocityY = jumpSpeed;
         }
+        
     }
+    private void FixedUpdate()
+    {
+        IsGround = false;
+    }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            IsGround = true;
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Destroy(gameObject);
+        }
+    }
+
 }
